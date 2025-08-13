@@ -1,6 +1,8 @@
 # PS Vita Update Scraper 🎮
 
 A modern Python scraper to automatically retrieve PS Vita game updates from Sony servers and the Renascene database.
+Same thing for [PS3](https://github.com/Axekinn/ps3-update-scraper), the goal is to be able to copy everything at once and paste it into [Jdownloader](https://jdownloader.org/jdownloader2).
+I'm too lazy to rewrite the same description, go see for yourself.
 
 ## 📋 Features
 
