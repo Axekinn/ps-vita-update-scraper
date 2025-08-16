@@ -1,39 +1,37 @@
-# PS Vita Update Scraper 🎮
+# 🎮 PS Vita Titles Scraper & Update Tool
 
-A modern Python scraper to automatically retrieve PS Vita game updates from Sony servers and the Renascene database.
-Same thing for [PS3](https://github.com/Axekinn/ps3-update-scraper), the goal is to be able to copy everything at once and paste it into [Jdownloader](https://jdownloader.org/jdownloader2).
-I'm too lazy to rewrite the same description, go see for yourself.
+A comprehensive Python tool for scraping PS Vita game titles from Renascene.com and discovering direct download links for game updates from Sony's servers.
 
-## 📋 Features
+## ✨ Features
 
-- 🔍 **Automatic scraping**: Crawls through 39 Renascene pages to retrieve PS Vita game information
-- 🔐 **HMAC authentication**: Uses HMAC authentication to access Sony's secure servers
-- 📦 **Update extraction**: Retrieves direct download links, versions, and metadata
-- 🧹 **Clean data**: Generates clean JSON with only essential information
-- ⚡ **Multi-threading**: Parallel processing for optimal performance
-- 🛡️ **Robust error handling**: Automatic retry and timeout management
+- 🕷️ **Web Scraping**: Automatically scrapes ~3,000 PS Vita titles from Renascene.com
+- 📦 **Update Discovery**: Finds direct download links for PS Vita game updates (.pkg files)
+- 🔍 **Smart Search**: Uses HMAC-SHA256 authentication to query Sony's servers
+- 📊 **Progress Tracking**: Resume scraping from where you left off
+- 💾 **Multiple Formats**: Export data to CSV and JSON formats
+- 🚀 **Batch Processing**: Process thousands of titles efficiently
+- 📈 **Statistics**: Detailed reporting and progress tracking
 
-## 🚀 Installation
+## 🛠️ Installation
 
 ### Prerequisites
 
-- Python 3.7 or higher
-- pip (Python package manager)
+- Python 3.7+
+- Chrome/Chromium browser installed
+- Internet connection
 
-### Environment Setup
+### Setup
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/Axekinn/ps-vita-update-scraper.git
-cd ps-vita-update-scraper
+git clone https://github.com/Axekinn/ps-vita-scraper.git
+cd ps-vita-scraper
 ```
 
-2. **Create a virtual environment**
+2. **Create virtual environment**
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# or
-.venv\Scripts\activate     # Windows
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 3. **Install dependencies**
@@ -41,166 +39,189 @@ source .venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### Required Dependencies
+4. **Install ChromeDriver** (if not already installed)
+```bash
+# Ubuntu/Debian
+sudo apt-get install chromium-chromedriver
 
-Create a `requirements.txt` file with:
+# Or download from: https://chromedriver.chromium.org/
+```
+
+## 📋 Requirements
+
+Create a `requirements.txt` file:
 ```txt
+selenium>=4.15.0
 requests>=2.31.0
-beautifulsoup4>=4.12.0
-lxml>=4.9.0
-urllib3>=2.0.0
+pandas>=2.1.0
+lxml>=4.9.3
 ```
 
-## 📖 Usage
+## 🚀 Usage
 
-### 1. Scrape PS Vita Data
-
-Run the main scraper to retrieve all information:
-
+Run the main script:
 ```bash
-python vita_scraper.py
+python "import os.py"
 ```
 
-This script will:
-- Crawl through 39 Renascene pages
-- Extract PS Vita Title IDs
-- Query Sony servers for updates
-- Generate `ps_vita_updates.json` with all data
+### Menu Options
 
-### 2. Extract Essential Data
-
-To get a clean JSON with only name, version, and link:
-
-```bash
-python extract_updates.py
+```
+📋 Main Menu:
+┌─────────────────────────────────────────────────────────────┐
+│ 1. 🕷️  Start full PS Vita titles scraping (39 pages)       │
+│ 2. ⏭️  Resume PS Vita titles scraping from last position   │
+│ 3. 📂 Load existing PS Vita titles CSV data                │
+│ 4. 🔍 Search for PS Vita updates by Media ID               │
+│ 5. 🔗 Get update links for first 25 titles (test)         │
+│ 6. 📦 Get update links for ALL PS Vita titles (~3k)       │
+│ 7. 📊 Show statistics from loaded data                     │
+│ 8. 🧪 Test scraping on page 1 of PS Vita titles           │
+│ 9. 🚪 Exit                                                 │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-This generates `ps_vita_updates_extracted.json` in the format:
+## 📖 How It Works
+
+### 1. Title Scraping
+- Scrapes PS Vita game information from Renascene.com
+- Extracts: Game ID, Title, Region, Media ID, Genre, Release Date
+- Handles pagination automatically
+- Saves progress every 5 pages
+
+### 2. Update Discovery
+- Uses Sony's official update servers
+- Implements HMAC-SHA256 authentication
+- Queries XML endpoints for update information
+- Extracts direct download links for .pkg files
+
+### 3. Data Processing
+- Processes titles sequentially to avoid server overload
+- Implements rate limiting and retry mechanisms
+- Supports resume functionality for large batches
+
+## 📁 Output Files
+
+- `psvita_titles.csv` - Complete list of PS Vita titles
+- `psvita_updates_final.json` - Detailed update information (JSON)
+- `psvita_updates_results.csv` - Update links in CSV format
+- `psvita_titles_progress.json` - Progress tracking file
+
+## 🔧 Configuration
+
+### Update Discovery Settings
+```python
+# Rate limiting (seconds between requests)
+time.sleep(random.uniform(0.5, 1.5))
+
+# Timeout settings
+timeout=30  # XML requests
+timeout=15  # Package discovery
+```
+
+### Web Scraping Settings
+```python
+# Chrome options
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+```
+
+## 📊 Example Output
+
+### Title Information
+```csv
+ID,Title,Region,Media_ID,Box_ID,Genre,Released
+1,Uncharted: Golden Abyss,US,PCSA00029,PCSA-00029,Action/Adventure,2012-02-15
+2,Persona 4 Golden,US,PCSE00120,PCSE-00120,RPG,2012-11-20
+```
+
+### Update Information
 ```json
-[
-  {
-    "nom_jeu": "Russian Subway Dogs",
-    "version_update": "01.01",
-    "lien_telechargement": "http://gs.ww.np.dl.playstation.net/ppkg/np/PCSE01226/..."
-  }
-]
+{
+  "media_id": "PCSE00120",
+  "title_name": "Persona 4 Golden",
+  "region": "US",
+  "has_updates": true,
+  "updates_count": 1,
+  "updates": [
+    {
+      "version": "01.01",
+      "url": "http://gs.ww.np.dl.playstation.net/ppkg/np/PCSE00120/...",
+      "sha1": "A1B2C3D4E5F6...",
+      "size": 45678912,
+      "filename": "PCSE00120_update.pkg",
+      "type": "XML Direct Link"
+    }
+  ]
+}
 ```
 
-## 📁 Project Structure
+## ⚡ Performance Tips
 
-```
-ps-vita-update-scraper/
-├── vita_scraper.py              # Main scraping script
-├── extract_updates.py           # Essential data extractor
-├── requirements.txt             # Python dependencies
-├── ps_vita_updates.json         # Complete data (generated)
-├── ps_vita_updates_extracted.json  # Clean data (generated)
-└── README.md                    # This file
-```
+1. **Batch Size**: Process titles in smaller batches (25-100) for testing
+2. **Rate Limiting**: Respect Sony's servers with appropriate delays
+3. **Resume Feature**: Use progress files for large datasets
+4. **Error Handling**: Monitor logs for failed requests
 
-## ⚙️ Configuration
+## 🚨 Important Notes
 
-### Important variables in `vita_scraper.py`
+- **Rate Limiting**: The tool implements delays to avoid overwhelming Sony's servers
+- **Legal Compliance**: Only accesses publicly available update information
+- **Server Load**: Designed to be respectful of Sony's infrastructure
+- **Data Accuracy**: Cross-references multiple sources for reliability
 
-```python
-TOTAL_PAGES = 39          # Number of Renascene pages to scrape
-MAX_WORKERS = 8           # Number of threads for requests
-REQUEST_TIMEOUT = 30      # HTTP request timeout
-RETRY_COUNT = 3           # Number of retry attempts on failure
-VERIFY_SSL = False        # SSL verification (disabled by default)
-```
+## 🔍 Troubleshooting
 
-### PS Vita Title ID Format
+### Common Issues
 
-The scraper looks for Title IDs in the format: `PC[A-Z]{2}[0-9]{5}`
-- Examples: `PCSE01226`, `PCSH10263`, `PCSB01464`
-
-## 🔧 Technical Details
-
-### 1. Sony Authentication
-
-The script uses the same HMAC authentication method as official tools:
-
-```python
-key = bytearray.fromhex('E5E278AA1EE34082A088279C83F9BBC806821C52F2AB5D2B4ABD995450355114')
-id_bytes = bytes('np_' + title_id, 'UTF-8')
-hash_value = hmac.new(key, id_bytes, hashlib.sha256).hexdigest()
-```
-
-### 2. Sony Server URLs
-
-- **Primary**: `https://gs-sec.ww.np.dl.playstation.net/pl/np/{title_id}/{hash}/{title_id}-ver.xml`
-- **Fallback**: `https://a0.ww.np.dl.playstation.net/tpl/np/{title_id}/{title_id}-ver.xml`
-
-### 3. XML Parsing
-
-The script analyzes update XML files to extract:
-- Package download URLs
-- Update versions
-- SHA1 hashes for verification
-- File sizes
-
-## 📊 Expected Results
-
-The script typically generates:
-- **~2,700+ updates** for PS Vita games
-- **Complete data**: Renascene metadata + update information
-- **Clean format**: game name, version, download link only
-
-## 🛠️ Troubleshooting
-
-### Common Errors
-
-**SSL Certificate errors**
+1. **ChromeDriver Issues**
 ```bash
-# Solution: Disable SSL verification
-VERIFY_SSL = False
+# Update ChromeDriver
+sudo apt-get update
+sudo apt-get install chromium-chromedriver
 ```
 
-**Timeout errors**
+2. **Selenium Import Error**
 ```bash
-# Solution: Increase timeout
-REQUEST_TIMEOUT = 60
+pip install selenium
 ```
 
-**Rate limiting**
-```bash
-# Solution: Reduce number of workers
-MAX_WORKERS = 4
-```
+3. **Connection Timeouts**
+- Check internet connection
+- Verify Sony servers are accessible
+- Increase timeout values if needed
 
-### Logs
+## 📈 Statistics
 
-Detailed logs are displayed during execution:
-```
-2025-08-13 10:30:15 INFO: Scraping PS Vita renascene across 39 pages...
-2025-08-13 10:30:16 INFO: PS Vita page 1: 75 entries
-2025-08-13 10:32:45 INFO: Unique valid PS Vita Title IDs: 1247
-2025-08-13 10:35:20 INFO: Wrote 2738 PS Vita records with updates
-```
-
-## 📝 License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
-## ⚠️ Disclaimer
-
-This script is intended for educational and preservation purposes. Please respect Sony's and Renascene's terms of service when using their services.
+- **~3,000+ PS Vita titles** from Renascene database
+- **Multiple regions**: US, EU, JP, and others
+- **Update success rate**: Varies by title availability
+- **Processing speed**: ~1-3 titles per second (with rate limiting)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-- Open issues to report bugs
-- Propose improvements via pull requests
-- Improve documentation
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-## 📞 Support
+## 📄 License
 
-If you encounter problems:
-1. Check error logs
-2. Consult the troubleshooting section
-3. Open an issue on GitHub with error details
+This project is for educational and research purposes. Please respect Sony's terms of service and copyright policies.
+
+## ⚠️ Disclaimer
+
+This tool is designed for legitimate backup and preservation purposes. Users are responsible for complying with applicable laws and terms of service. The authors are not responsible for any misuse of this software.
+
+## 🔗 Links
+
+- [Renascene.com](https://renascene.com/psv/) - PS Vita Games Database
+- [PlayStation Vita](https://en.wikipedia.org/wiki/PlayStation_Vita) - Console Information
 
 ---
 
-**Developed with ❤️ for the PS Vita community**
+**Author**: Axekinn  
+**Version**: 1.0.0  
+**Last Updated**: August 2025
